@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/bebek-goreng/golang-jwt-auth/controllers"
 	"github.com/bebek-goreng/golang-jwt-auth/initializer"
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,12 @@ func main() {
 	}
 
 	r := gin.Default()
+
+	api := r.Group("/api/auth")
+	{
+		api.POST("/signup", controllers.SignUp)
+		api.POST("/signin", controllers.SignIn)
+	}
 
 	r.Run(":" + port)
 }

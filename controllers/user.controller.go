@@ -25,6 +25,15 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
+	var existingUser models.User
+
+	if err := initializer.DB.First(&existingUser, "email = ?", user.Email).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Email already use"})
+			return
+		}
+	}
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error - Failed to hash password"})
